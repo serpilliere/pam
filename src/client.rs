@@ -1,7 +1,7 @@
 //! Authentication related structure and functions
 use std::env;
 
-use crate::{conv, enums::*, functions::*, types::*};
+use crate::{conv, enums::*, functions::*, types::*, env::*};
 
 /// Main struct to authenticate a user
 ///
@@ -139,7 +139,7 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
         if let Some(mut env_list) = get_pam_env(self.handle) {
             let env = env_list.to_vec();
             for (key, value) in env {
-                prinln!("SET ENV {:?} {:?}", key, value);
+                println!("SET ENV {:?} {:?}", key, value);
                 env::set_var(&key, &value);
             }
         }
