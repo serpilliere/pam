@@ -134,6 +134,16 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
     fn initialize_environment(&mut self) -> PamResult<()> {
         use users::os::unix::UserExt;
 
+
+        // Set PAM environment in the local process
+        if let Some(mut env_list) = get_pam_env(self.handle) {
+            let env = env_list.to_vec();
+            for (key, value) in env {
+                prinln!("SET ENV {:?} {:?}", key, value);
+                env::set_var(&key, &value);
+            }
+        }
+
         let user = users::get_user_by_name(self.conversation.username()).unwrap_or_else(|| {
             panic!(
                 "Could not get user by name: {:?}",
