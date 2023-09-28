@@ -214,10 +214,15 @@ impl<'a, C: conv::Conversation> Client<'a, C> {
 
 impl<'a, C: conv::Conversation> Drop for Client<'a, C> {
     fn drop(&mut self) {
+        println!("Drop client");
         if self.has_open_session && self.close_on_drop {
+            println!("Close session");
             close_session(self.handle, false);
         }
+        println!("del creds");
         let code = setcred(self.handle, PamFlag::Delete_Cred);
+        println!("end pam");
         end(self.handle, code);
+        println!("done");
     }
 }
