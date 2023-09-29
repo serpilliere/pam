@@ -109,7 +109,7 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
                 println!("null message");
                 return 0;
             }
-        }
+        };
         let r: &mut PamResponse = &mut *(resp.offset(i));
 
         let msg = CStr::from_ptr(m.msg);
