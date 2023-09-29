@@ -7,6 +7,9 @@ use std::mem;
 
 use crate::{ffi::pam_conv, PamMessage, PamMessageStyle, PamResponse, PamReturnCode};
 
+let test_str: &[i8] = [0x31, 0x32, 0x0];
+
+
 /// A trait representing the PAM authentification conversation
 ///
 /// PAM authentification is done as a conversation mechanism, in which PAM
@@ -89,7 +92,6 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     // DBG
 
     println!("skip");
-    return PamReturnCode::Buf_Err as c_int;
 
     println!("Alloc");
     // allocate space for responses
@@ -98,10 +100,15 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     if resp.is_null() {
         return PamReturnCode::Buf_Err as c_int;
     }
-
+    *out_resp = resp;
+    for i in 0..num_msg as isize {
+        let r: &mut PamResponse = &mut *(resp.offset(i));
+        r.resp = strdup(test_str);
+        println!("resp {:?}", r.resp);
+    }
     println!("Messages: {:?}", num_msg);
-
     let mut result: PamReturnCode = PamReturnCode::Success;
+    return result;
     for i in 0..num_msg as isize {
         // get indexed values
         // FIXME: check this
