@@ -161,6 +161,8 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         }
     }
 
+    println!("result {:?} ", result);
+
     // free allocated memory if an error occured
     if result != PamReturnCode::Success {
         println!("free");
