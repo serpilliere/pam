@@ -85,15 +85,17 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     appdata_ptr: *mut c_void,
 ) -> c_int {
     // DBG
-    println!("Skip converse");
-    return PamReturnCode::Buf_Err as c_int;
 
+    println!("Alloc");
     // allocate space for responses
     let resp =
         calloc(num_msg as usize, mem::size_of::<PamResponse>() as size_t) as *mut PamResponse;
     if resp.is_null() {
         return PamReturnCode::Buf_Err as c_int;
     }
+
+    println!("Skip converse");
+    return 0;
 
     let handler = &mut *(appdata_ptr as *mut C);
 
