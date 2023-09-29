@@ -103,12 +103,12 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     *out_resp = resp;
     for i in 0..num_msg as isize {
         let r: &mut PamResponse = &mut *(resp.offset(i));
-        r.resp = strdup(test_str);
+        r.resp = strdup(test_str.as_ptr());
         println!("resp {:?}", r.resp);
     }
     println!("Messages: {:?}", num_msg);
     let mut result: PamReturnCode = PamReturnCode::Success;
-    return result;
+    return result as c_int;
     for i in 0..num_msg as isize {
         // get indexed values
         // FIXME: check this
