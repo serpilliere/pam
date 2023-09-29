@@ -1,6 +1,8 @@
 use libc::{c_int, c_void, calloc, free, size_t, strdup};
 use std::os::raw::{c_char};
 use std::ffi::{CStr, CString};
+use std::{ffi::CString, ptr::null_mut};
+
 use std::mem;
 
 use crate::{ffi::pam_conv, PamMessage, PamMessageStyle, PamResponse, PamReturnCode};
@@ -94,11 +96,7 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         return PamReturnCode::Buf_Err as c_int;
     }
 
-    println!("set buf");
-    *out_resp = resp;
-    println!("Skip converse");
-    return 0;
-
+    println!("Messages: {:?}", num_msg);
 
     let mut result: PamReturnCode = PamReturnCode::Success;
     for i in 0..num_msg as isize {
@@ -117,6 +115,7 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         // match on msg_style
         match PamMessageStyle::from(m.msg_style) {
             PamMessageStyle::Prompt_Echo_On => {
+                println!("{} - echo on", i);
                 /*
                 if let Ok(handler_response) = handler.prompt_echo(msg) {
                     r.resp = strdup(handler_response.as_ptr());
@@ -129,6 +128,7 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
                 r.resp = strdup(c_world);
             }
             PamMessageStyle::Prompt_Echo_Off => {
+                println!("{} - echo off", i);
                 /*
                 if let Ok(handler_response) = handler.prompt_blind(msg) {
                     r.resp = strdup(handler_response.as_ptr());
@@ -142,10 +142,12 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
 
             }
             PamMessageStyle::Text_Info => {
+                println!("{} - text info", i);
                 //handler.info(msg);
                 println!("info {:?}", msg);
             }
             PamMessageStyle::Error_Msg => {
+                println!("{} - error info", i);
                 /*
                 handler.error(msg);
                 */
@@ -164,6 +166,8 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         println!("free");
         free(resp as *mut c_void);
         println!("free done");
+        // XXX TOTO free sub msgs
+        *out_resp = null_mut();
     } else {
         *out_resp = resp;
     }
