@@ -1,7 +1,7 @@
 use libc::{c_int, c_void, calloc, free, size_t, strdup};
 use std::os::raw::{c_char};
 use std::ffi::{CStr, CString};
-use std::{ffi::CString, ptr::null_mut};
+use std::{ptr::null_mut};
 
 use std::mem;
 
