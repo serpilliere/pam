@@ -7,7 +7,7 @@ use std::mem;
 
 use crate::{ffi::pam_conv, PamMessage, PamMessageStyle, PamResponse, PamReturnCode};
 
-let test_str: &[i8] = [0x31, 0x32, 0x0];
+const test_str: &[i8] = [0x31, 0x32, 0x0];
 
 
 /// A trait representing the PAM authentification conversation
