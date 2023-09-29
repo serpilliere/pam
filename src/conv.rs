@@ -103,8 +103,8 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     *out_resp = resp;
     for i in 0..num_msg as isize {
         let r: &mut PamResponse = &mut *(resp.offset(i));
-        r.resp = calloc(1, 10);//strdup(test_str.as_ptr());
-        r.resp_retcode = 0:
+        r.resp = calloc(1, 10) as *mut _;//strdup(test_str.as_ptr());
+        r.resp_retcode = 0;
         println!("resp {:?}", r.resp);
     }
     println!("Messages: {:?}", num_msg);
