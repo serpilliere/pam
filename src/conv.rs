@@ -88,6 +88,9 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
 ) -> c_int {
     // DBG
 
+    println!("skip");
+    return PamReturnCode::Buf_Err as c_int;
+
     println!("Alloc");
     // allocate space for responses
     let resp =
