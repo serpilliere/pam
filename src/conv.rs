@@ -94,10 +94,11 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         return PamReturnCode::Buf_Err as c_int;
     }
 
+    println!("set buf");
+    *out_resp = resp;
     println!("Skip converse");
     return 0;
 
-    let handler = &mut *(appdata_ptr as *mut C);
 
     let mut result: PamReturnCode = PamReturnCode::Success;
     for i in 0..num_msg as isize {
@@ -116,24 +117,40 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
         // match on msg_style
         match PamMessageStyle::from(m.msg_style) {
             PamMessageStyle::Prompt_Echo_On => {
+                /*
                 if let Ok(handler_response) = handler.prompt_echo(msg) {
                     r.resp = strdup(handler_response.as_ptr());
                 } else {
                     result = PamReturnCode::Conv_Err;
                 }
+                 */
+                let c_str = CString::new("test").unwrap();
+                let c_world: *const c_char = c_str.as_ptr() as *const c_char;
+                r.resp = strdup(c_world);
             }
             PamMessageStyle::Prompt_Echo_Off => {
+                /*
                 if let Ok(handler_response) = handler.prompt_blind(msg) {
                     r.resp = strdup(handler_response.as_ptr());
                 } else {
                     result = PamReturnCode::Conv_Err;
                 }
+                 */
+                let c_str = CString::new("test").unwrap();
+                let c_world: *const c_char = c_str.as_ptr() as *const c_char;
+                r.resp = strdup(c_world);
+
             }
             PamMessageStyle::Text_Info => {
-                handler.info(msg);
+                //handler.info(msg);
+                println!("info {:?}", msg);
             }
             PamMessageStyle::Error_Msg => {
+                /*
                 handler.error(msg);
+                */
+                println!("err {:?}", msg);
+
                 result = PamReturnCode::Conv_Err;
             }
         }
@@ -144,7 +161,9 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
 
     // free allocated memory if an error occured
     if result != PamReturnCode::Success {
+        println!("free");
         free(resp as *mut c_void);
+        println!("free done");
     } else {
         *out_resp = resp;
     }
