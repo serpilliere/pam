@@ -103,7 +103,7 @@ pub(crate) unsafe extern "C" fn converse<C: Conversation>(
     for i in 0..num_msg as isize {
         // get indexed values
         // FIXME: check this
-        let m: &PamMessage = *(msg.offset(i)).as_ref();
+        let m: &PamMessage = (*(msg.offset(i))).as_ref();
         let r: &mut PamResponse = &mut *(resp.offset(i));
 
         let msg = CStr::from_ptr(m.msg);
